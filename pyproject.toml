@@ -10,7 +10,11 @@ requires-python = ">=3.10"
 dependencies = [
     "dvc>=3.67.1",
     "dvc-http>=2.32.0",
+    "mlflow>=3.16.0",
     "pillow>=12.3.0",
+    "scikit-learn>=1.7.2",
+    "torch",
+    "torchvision",
 ]
 
 [project.scripts]
@@ -19,3 +23,16 @@ mlops-lab-1 = "mlops_lab_1:main"
 [build-system]
 requires = ["uv_build>=0.12.10,<0.13.0"]
 build-backend = "uv_build"
+
+[[tool.uv.index]]
+name = "pytorch-cuda"
+url = "https://download.pytorch.org/whl/cu128"
+explicit = true
+
+[tool.uv.sources]
+torch = [
+    { index = "pytorch-cuda" },
+]
+torchvision = [
+    { index = "pytorch-cuda" },
+]
