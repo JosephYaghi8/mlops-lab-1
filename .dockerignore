@@ -1,0 +1,11 @@
+.venv/
+data/
+mlruns/
+mlflow.db
+.git/
+__pycache__/
+*.pyc
+.dvc/
+.python-version
+answers-lab1.md
+answers-lab2.md
