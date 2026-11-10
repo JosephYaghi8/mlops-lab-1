@@ -1,11 +1,12 @@
 import argparse
 
-import mlflow
 import mlflow.pytorch
 import torch
-import torch.nn as nn
-from torch.utils.data import DataLoader, random_split
+from torch import nn
+from torch.utils.data import DataLoader
 from torchvision import datasets, models, transforms
+
+import mlflow
 
 
 def get_dataloaders(dataset_name: str, batch_size: int):
@@ -107,7 +108,7 @@ def main():
 
             print(f"Epoch {epoch+1}/{args.epochs} - train_loss: {train_loss:.4f} - val_loss: {val_loss:.4f} - val_accuracy: {val_accuracy:.4f}")
 
-        test_loss, test_accuracy = run_epoch(model, eval_loader, criterion, optimizer, device, train=False)
+        _test_loss, test_accuracy = run_epoch(model, eval_loader, criterion, optimizer, device, train=False)
         mlflow.log_metric("test_accuracy", test_accuracy)
         print(f"Final test_accuracy: {test_accuracy:.4f}")
 

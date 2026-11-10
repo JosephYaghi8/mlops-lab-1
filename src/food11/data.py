@@ -1,9 +1,10 @@
-﻿import os
+import os
 import shutil
 from pathlib import Path
+
 from PIL import Image
 
-CATEGORIES = [
+CLASSES = [
     "Bread", "Dairy product", "Dessert", "Egg", "Fried food",
     "Meat", "Noodles-Pasta", "Rice", "Seafood", "Soup", "Vegetable-Fruit",
 ]
@@ -12,8 +13,19 @@ SPLITS = ["training", "evaluation", "validation"]
 RAW_DIR = Path("./data/food11_raw")
 PROCESSED_DIR = Path("./data/food11_processed")
 MINI_DIR = Path("./data/food11_processed_mini")
-IMG_SIZE = (128, 128)
+IMG_SIZE = 128
 MINI_LIMIT = 100
+
+
+def category_from_filename(filename: str) -> str:
+    """'3_120.jpg' -> 'Egg'"""
+    cat_index = int(filename.split("_")[0])
+    return CLASSES[cat_index]
+
+
+def resize_image(img: "Image.Image", size: int = IMG_SIZE) -> "Image.Image":
+    """Returns an RGB image of size x size."""
+    return img.convert("RGB").resize((size, size))
 
 
 def process_split(split: str):
@@ -22,16 +34,16 @@ def process_split(split: str):
         print(f"Skipping {split}: {src_dir} not found")
         return
 
-    mini_counts = {cat: 0 for cat in CATEGORIES}
+    mini_counts = {cat: 0 for cat in CLASSES}
 
     for fname in os.listdir(src_dir):
         fpath = src_dir / fname
         if not fpath.is_file():
             continue
 
+        # filename format: "<category_index>_<n>.jpg"
         try:
-            cat_index = int(fname.split("_")[0])
-            category = CATEGORIES[cat_index]
+            category = category_from_filename(fname)
         except (ValueError, IndexError):
             print(f"Skipping unrecognized file: {fname}")
             continue
@@ -40,7 +52,7 @@ def process_split(split: str):
         out_dir.mkdir(parents=True, exist_ok=True)
 
         with Image.open(fpath) as img:
-            img = img.convert("RGB").resize(IMG_SIZE)
+            img = resize_image(img)
             img.save(out_dir / fname)
 
         if mini_counts[category] < MINI_LIMIT:
