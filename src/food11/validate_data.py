@@ -55,7 +55,7 @@ def check_images_valid(root: Path) -> bool:
                     print(f"FAIL: {img_path} is not RGB 128x128 "
                           f"(mode={img.mode}, size={img.size})")
                     ok = False
-        except Exception as e:
+        except (OSError, ValueError) as e:
             print(f"FAIL: {img_path} could not be opened: {e}")
             ok = False
     if ok:
